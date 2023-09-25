@@ -1,0 +1,188 @@
+create components
+ng g c  componentname 
+1.ProductDetail   2 Product-list   3 PageNotFound    4)Home
+--appmodule.ts-----------------------------------------------------------------------------
+import { Component, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { Router, RouterModule, Routes } from '@angular/router';
+
+
+
+import { AppComponent } from './app.component';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { ProductListComponent } from './product-list/product-list.component';
+import { HomeComponent } from './home/home.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ProductService } from './product.service';
+
+ export const routes: Routes = [
+  {path:'products',component:ProductListComponent},
+  {path:'proudct/:id',component:ProductDetailComponent},
+  {
+   path:'Home',component:HomeComponent
+  },{path:'',redirectTo:'Home',pathMatch:'full'},
+{path:'**',component:PageNotFoundComponent}]
+@NgModule({
+  declarations: [
+    AppComponent,
+    ProductDetailComponent,
+    ProductListComponent,
+    PageNotFoundComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    RouterModule.forRoot(routes),
+  
+  ],
+  providers: [  ProductService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==================================================================================
+product.ts
+export class Product { 
+    productId:number ;
+    productname: string ;
+    price:number;
+    quantity:Number;
+    
+    imageurl:string="";
+
+    constructor(productID:number,imageurl:string ,   name: string ,quantity:number,   price:number) {
+        this.productId=productID,
+        
+        this.productname=name;
+        this.price=price;
+        this.quantity=quantity;
+        imageurl:String;
+    }
+  
+  
+  
+  }
+
+--------------------------------------------
+service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService {
+
+  constructor() { }
+   Products:any=[];
+  getAllProducts():any
+ {
+ let  products=[{
+    "productId":100,
+    "productname":'mobile',
+    "price":50000,
+    "quantity":1,
+    "imageurl":"C:\\Users\\dell\\Desktop\\images\\redmi.jpg"
+    
+
+  },{
+    "productId":200,
+    "productname":'mobile',
+    "price":50000,
+    "quantity":1,
+    "imageurl":"C:\\Users\\dell\\Desktop\\images\\"
+
+  }]
+  return products;
+}
+}
+
+--------------------------------------------------
+product-list.ts
+import { Component } from '@angular/core';
+import { Product } from '../Products';
+import { ProductService } from '../product.service';
+
+@Component({
+  selector: 'app-product-list',
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.css']
+})
+export class ProductListComponent {
+columnspan:number=2;
+products:Product[]=[];
+//iinject into  constructor a service reference
+constructor(private  objps:ProductService)
+{
+  this.products=objps.getAllProducts();
+}
+
+
+}
+ 
+
+---------------------------------------------
+produc-list.html
+<div>
+    <p>product-list works!</p>
+  <table>
+      <thead>
+      <tr border:1px red>
+  
+          <th>ProductID</th>
+          <th>productname</th>
+          <th>Price</th>
+          <th>Quanity</th>
+          <th>image</th>
+      
+      </tr>
+  </thead>
+      <tr *ngFor="let product of products">
+      <td>{{product.productId}}</td>
+      <td>{{product.productname}}</td>
+      <td>{{product.price}}</td>
+      <td>{{product.quantity}}</td>
+      <td><img [src]="product.imageurl" height="100" width="100"></td>
+      
+      </tr>
+  </table>
+  
+  
+  
+  
+  </div>
+
+--------------------------------------------------------------------------------------------
+app.component.html
+<div>
+  <ul>
+    <li ><a [routerLink]="['/Home']">Home</a></li> 
+     <li ><a [routerLink]="['/Product-list']">Product-list</a></li>  
+    <li ><a [routerLink]="['/Product=detail']">Product-details</a></li> 
+    <li ><a [routerLink]="['/PageNotFound']">PageNotFound</a></li>                                     
+  </ul>
+</div>
+<router-outlet></router-outlet>
+<app-product-list><app-product-list>
